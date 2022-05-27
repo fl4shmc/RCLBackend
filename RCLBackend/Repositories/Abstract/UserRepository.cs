@@ -13,15 +13,22 @@ namespace RCLBackend.Repositories.Abstract
             _context = context;
         }
 
+        public UserInfo GetUserByUserId(string userId)
+        {
+            var user = _context.UserInfo.FirstOrDefault(x => x.UserId == userId);
+            return user;
+        }
+
+        public void Login(UserInfo user)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Register(UserInfo user)
         {
             _context.UserInfo.Add(user);
             _context.SaveChanges();
         }
 
-        public UserInfo Login(UserInfo user) 
-        {
-            throw new NotImplementedException();
-        }
     }
 }

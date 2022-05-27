@@ -13,18 +13,11 @@ namespace RCLBackend.Services
             _unitOfWork = unitOfWork;
         }
 
-        public UserLoginDTO Login(UserLoginDTO user)
-        {
-            //check for the user in db
-
-            throw new NotImplementedException();
-        }
-
         public void Register(UserRegisterDTO user)
         {
             UserInfo usr = new UserInfo();
             usr.UserId = user.UserId;
-            usr.PasswordHash = user.Password;
+            usr.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.Password);
             usr.FirstName = user.FirstName;
             usr.LastName = user.LastName;
             usr.EmailAddress = user.EmailAddress;
