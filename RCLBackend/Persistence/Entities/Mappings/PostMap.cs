@@ -7,9 +7,6 @@ namespace RCLBackend.Persistence.Entities.Mappings
         public PostMap(EntityTypeBuilder<Post> entityBuilder)
         {
             entityBuilder.HasKey(x => x.PostId);
-
-            entityBuilder.HasOne(a => a.UserInfo).WithMany(x => x.Posts).HasForeignKey(x => x.UserId);
-
         }
     }
 }

@@ -12,8 +12,8 @@ using RCLBackend.Persistence.Context;
 namespace RCLBackend.Migrations
 {
     [DbContext(typeof(ShortStoryNetworkDbContext))]
-    [Migration("20220526163912_Initial")]
-    partial class Initial
+    [Migration("20220529143743_MyFirstMigration")]
+    partial class MyFirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,27 @@ namespace RCLBackend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("RCLBackend.Persistence.Entities.Follower", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WriterId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Follower");
+                });
 
             modelBuilder.Entity("RCLBackend.Persistence.Entities.Post", b =>
                 {
@@ -38,13 +59,20 @@ namespace RCLBackend.Migrations
                     b.Property<string>("Poste")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserInfoUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(12)");
 
                     b.HasKey("PostId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserInfoUserId");
 
                     b.ToTable("Post");
                 });
@@ -116,7 +144,7 @@ namespace RCLBackend.Migrations
                 {
                     b.HasOne("RCLBackend.Persistence.Entities.UserInfo", "UserInfo")
                         .WithMany("Posts")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserInfoUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

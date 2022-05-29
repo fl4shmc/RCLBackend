@@ -1,13 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using RCLBackend.DTO;
 using RCLBackend.Persistence.Entities;
 using RCLBackend.Repositories.Abstract;
 using RCLBackend.Services;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace RCLBackend.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -15,12 +20,14 @@ namespace RCLBackend.Controllers
         private readonly IUserRepository _repository;
         private readonly AuthService _authService;
         private readonly IUserService _userService;
+        private IConfiguration _configuration;
 
-        public UserController(IUserRepository repository, AuthService authService, IUserService userService)
+        public UserController(IUserRepository repository, AuthService authService, IUserService userService, IConfiguration configuration)
         {
             _repository = repository;
             _authService = authService;
             _userService = userService;
+            _configuration = configuration;
         }
 
         [AllowAnonymous]
@@ -54,14 +61,34 @@ namespace RCLBackend.Controllers
                 {
                     return BadRequest(new { message = "Invalid credentials" });
                 }
-                
-                var jwt = _authService.Generate(request.UserId);
-                Response.Cookies.Append("jwt", jwt, new CookieOptions
-                {
-                    HttpOnly = true,
-                });
 
-                return Ok(new { message = "success" });
+                var claims = new[] {
+                        new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                        new Claim("UserId", user.UserId),
+                        new Claim("DisplayName", user.FirstName),
+                        new Claim("UserName", user.UserId),
+                        new Claim("Email", user.EmailAddress),
+                        new Claim("Role", user.UserRole)
+                    };
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var token = new JwtSecurityToken(
+                    _configuration["Jwt:Issuer"],
+                    _configuration["Jwt:Audience"],
+                    claims,
+                    expires: DateTime.UtcNow.AddDays(1),
+                    signingCredentials: signIn);
+
+                return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+
+                //var jwt = _authService.Generate(request);
+                //Response.Cookies.Append("jwt", jwt, new CookieOptions
+                //{
+                //    HttpOnly = true,
+                //});
             }
             catch (Exception ex)
             {
@@ -87,16 +114,12 @@ namespace RCLBackend.Controllers
             }
         }
 
-        [HttpPost("Logout")]
-        public IActionResult Logout() 
+        [HttpGet("Test")]
+        public IActionResult Test()
         {
             try
             {
-                Response.Cookies.Delete("jwt");
-                return Ok(new 
-                { 
-                    message = "success"
-                });
+                return Ok();
             }
             catch (Exception ex)
             {

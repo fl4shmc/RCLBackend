@@ -19,11 +19,6 @@ namespace RCLBackend.Repositories.Abstract
             return user;
         }
 
-        public void Login(UserInfo user)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Register(UserInfo user)
         {
             _context.UserInfo.Add(user);

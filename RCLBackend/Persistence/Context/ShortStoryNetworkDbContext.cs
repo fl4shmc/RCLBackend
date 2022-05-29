@@ -26,11 +26,13 @@ namespace RCLBackend.Persistence.Context
             new PostMap(modelBuilder.Entity<Post>());
             new StatVowelsMap(modelBuilder.Entity<StatVowels>());
             new UserInfoMap(modelBuilder.Entity<UserInfo>());
+            new FollowerMap(modelBuilder.Entity<Follower>());
         }
 
         public DbSet<Post> Post { get; set; }
         public DbSet<StatVowels> StatVowels { get; set; }
         public DbSet<UserInfo> UserInfo { get; set; }
+        public DbSet<Follower> Follower { get; set; }
 
     }
 }

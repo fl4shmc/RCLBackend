@@ -31,6 +31,7 @@ namespace RCLBackend.Services
             tokenHandler.ValidateToken(jwt, new TokenValidationParameters
             {
                 IssuerSigningKey  = new SymmetricSecurityKey(key),
+                ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 ValidateIssuer = false,
                 ValidateAudience = false,
