@@ -13,10 +13,14 @@ namespace RCLBackend.Repositories.Abstract
             _context = context;
         }
 
+        public List<UserInfo> GetAllUsers()
+        {
+            return _context.UserInfo.Where(x => x.UserRole != "M").ToList();
+        }
+
         public UserInfo GetUserByUserId(string userId)
         {
-            var user = _context.UserInfo.FirstOrDefault(x => x.UserId == userId);
-            return user;
+            return _context.UserInfo.FirstOrDefault(x => x.UserId == userId);
         }
 
         public void Register(UserInfo user)

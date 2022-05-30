@@ -7,5 +7,6 @@ namespace RCLBackend.Repositories.Abstract
     {
         void Register(UserInfo user);
         UserInfo GetUserByUserId(string userId);
+        List<UserInfo> GetAllUsers();
     }
 }

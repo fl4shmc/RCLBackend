@@ -13,6 +13,25 @@ namespace RCLBackend.Services
             _unitOfWork = unitOfWork;
         }
 
+        public List<UserInfoDTO> GetAllUsers()
+        {
+            List<UserInfoDTO> users = new List<UserInfoDTO>();
+            var result = _unitOfWork.User.GetAllUsers();
+            foreach (var item in result)
+            {
+                UserInfoDTO user = new UserInfoDTO();
+                user.UserId = item.UserId;
+                user.FirstName = item.FirstName;
+                user.LastName = item.LastName;
+                user.EmailAddress = item.EmailAddress;
+                user.IsEditor = item.IsEditor;
+                user.IsBanned = item.IsBanned;
+                user.UserRole = item.UserRole;
+                users.Add(user);
+            }
+            return users;
+        }
+
         public void Register(UserRegisterDTO user)
         {
             UserInfo usr = new UserInfo();

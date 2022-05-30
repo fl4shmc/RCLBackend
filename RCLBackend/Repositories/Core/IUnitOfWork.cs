@@ -6,6 +6,7 @@ namespace RCLBackend.Repositories.Core
 	{
 		IUserRepository User { get; }
 		IWriterRepository Writer { get; }
+		IPostRepository Post { get; }
 
 		void Save();
 		Task SaveAsync();

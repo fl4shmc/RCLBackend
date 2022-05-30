@@ -96,24 +96,6 @@ namespace RCLBackend.Controllers
             }
         }
 
-        [HttpGet("User")]
-        public IActionResult User() 
-        {
-            try
-            {
-                var jwt = Request.Cookies["jwt"];
-                var token = _authService.Verify(jwt);
-                string userid = token.Issuer;
-                var user = _repository.GetUserByUserId(userid);
-
-                return Ok(user);
-            }
-            catch (Exception)
-            {
-                return Unauthorized();
-            }
-        }
-
         [HttpGet("Test")]
         public IActionResult Test()
         {

@@ -20,7 +20,14 @@ namespace RCLBackend.Repositories
             try
             {
                 return (from post in _context.Post where post.UserId.Equals(userid)
-                        select post).ToList();
+                        select new Post 
+                        { 
+                            PostId = post.PostId,
+                            Title = post.Title,
+                            Poste = post.Poste,
+                            Date = post.Date,
+                            UserId = userid
+                        }).ToList();
             }
             catch (Exception ex)
             {

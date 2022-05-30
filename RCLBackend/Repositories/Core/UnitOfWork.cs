@@ -12,11 +12,13 @@ namespace RCLBackend.Repositories.Core
             _context = context;
             User = new UserRepository(_context);
             Writer = new WriterRepository(_context);
+            Post = new PostRepository(_context);
 
         }
 
         public IUserRepository User { get; set; }
         public IWriterRepository Writer { get; set; }
+        public IPostRepository Post { get; set; }
 
         public void Dispose()
         {
